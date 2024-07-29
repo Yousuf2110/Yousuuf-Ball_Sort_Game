@@ -19,4 +19,8 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
   },
+  selectedTube: {
+    borderColor: 'gold',
+    borderWidth: 4,
+  },
 });

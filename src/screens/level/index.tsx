@@ -1,12 +1,4 @@
-import {
-  Button,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  View,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {SafeAreaView, StatusBar, Text, View} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -14,9 +6,8 @@ import {THEME} from '../../theme';
 import SettingSvg from '../../assets/svg/settings';
 import ResetSvg from '../../assets/svg/reset';
 import BackSvg from '../../assets/svg/back';
-import Footer from '../../components/footer';
-import Ball from '../../components/ball';
 import GameBoard from '../../components/gameBoard';
+import Footer from '../../components/footer';
 
 const Level = () => {
   const navigation: any = useNavigation();

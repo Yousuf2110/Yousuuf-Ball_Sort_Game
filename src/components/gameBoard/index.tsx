@@ -4,17 +4,25 @@ import Tube from '../tube';
 import {styles} from './styles';
 
 type TubeColor = 'red' | 'blue' | 'green' | 'yellow';
-
 type TubeType = TubeColor[];
-
 type TubesState = TubeType[];
 
+const shuffleArray = (array: any) => {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+};
+
 const generateInitialState = (): TubesState => {
+  const colors = ['red', 'blue', 'green', 'yellow'];
+
   return [
-    ['red', 'blue', 'green', 'yellow'],
-    ['yellow', 'red', 'blue', 'green'],
-    ['green', 'yellow', 'red', 'blue'],
-    ['blue', 'green', 'yellow', 'red'],
+    shuffleArray([...colors]),
+    shuffleArray([...colors]),
+    shuffleArray([...colors]),
+    shuffleArray([...colors]),
     [],
     [],
   ];
@@ -26,9 +34,15 @@ const GameBoard: React.FC = () => {
 
   const handleTubePress = (index: number) => {
     if (selectedTube === null) {
-      setSelectedTube(index);
+      if (tubes[index].length > 0) {
+        setSelectedTube(index);
+      } else {
+        ToastAndroid.show('Select a non-empty tube!', ToastAndroid.SHORT);
+      }
     } else {
-      moveBall(selectedTube, index);
+      if (index !== selectedTube) {
+        moveBall(selectedTube, index);
+      }
       setSelectedTube(null);
     }
   };
@@ -84,6 +98,7 @@ const GameBoard: React.FC = () => {
             key={index}
             balls={balls}
             onPress={() => handleTubePress(index)}
+            selected={index === selectedTube}
           />
         ))}
       </View>

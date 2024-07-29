@@ -6,7 +6,7 @@ interface BallProps {
   color: string;
 }
 
-const Ball: React.FC<BallProps> = ({color}: any) => {
+const Ball: React.FC<BallProps> = ({color}) => {
   return <View style={[styles.ball, {backgroundColor: color}]} />;
 };
 
