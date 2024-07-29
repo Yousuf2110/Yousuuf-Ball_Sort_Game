@@ -1,4 +1,10 @@
-import {SafeAreaView, StatusBar, Text, View} from 'react-native';
+import {
+  SafeAreaView,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -11,6 +17,28 @@ import Footer from '../../components/footer';
 
 const Level = () => {
   const navigation: any = useNavigation();
+
+  const shuffleArray = (array: any) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
+
+  const generateInitialState = () => {
+    const colors = [THEME.RED, THEME.BLUE, THEME.GREEN, THEME.YELLOW];
+
+    return [
+      shuffleArray([...colors]),
+      shuffleArray([...colors]),
+      shuffleArray([...colors]),
+      shuffleArray([...colors]),
+      [],
+      [],
+    ];
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={THEME.BACKGROUND} />
@@ -22,9 +50,11 @@ const Level = () => {
           <Text style={styles.title}>Level</Text>
           <Text style={styles.subTitle}>4</Text>
         </View>
-        <View style={styles.iconContainer}>
+        <TouchableOpacity
+          onPress={() => generateInitialState()}
+          style={styles.iconContainer}>
           <ResetSvg width="25" height="25" />
-        </View>
+        </TouchableOpacity>
       </View>
       <GameBoard />
       <View style={styles.footer}>

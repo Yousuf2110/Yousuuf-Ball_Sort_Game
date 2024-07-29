@@ -1,7 +1,12 @@
 import React, {useState} from 'react';
-import {View, ToastAndroid} from 'react-native';
+import {View, ToastAndroid, TouchableOpacity} from 'react-native';
 import Tube from '../tube';
 import {styles} from './styles';
+import {THEME} from '../../theme';
+import Ball from '../ball';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
+import { SCREEN } from '../../constants/screens';
+import { useNavigation } from '@react-navigation/native';
 
 type TubeColor = 'red' | 'blue' | 'green' | 'yellow';
 type TubeType = TubeColor[];
@@ -16,7 +21,7 @@ const shuffleArray = (array: any) => {
 };
 
 const generateInitialState = (): TubesState => {
-  const colors = ['red', 'blue', 'green', 'yellow'];
+  const colors = [THEME.RED, THEME.BLUE, THEME.GREEN, THEME.YELLOW];
 
   return [
     shuffleArray([...colors]),
@@ -29,6 +34,7 @@ const generateInitialState = (): TubesState => {
 };
 
 const GameBoard: React.FC = () => {
+  const navigation:any = useNavigation()
   const [tubes, setTubes] = useState<TubesState>(generateInitialState);
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
 
@@ -55,11 +61,9 @@ const GameBoard: React.FC = () => {
     if (fromTube.length > 0 && toTube.length < 4) {
       const colorToMove = fromTube[0];
       const ballsToMove: TubeColor[] = [];
-
       while (fromTube.length > 0 && fromTube[0] === colorToMove) {
         ballsToMove.push(fromTube.shift()!);
       }
-
       if (toTube.length === 0 || toTube[0] === colorToMove) {
         toTube.unshift(...ballsToMove);
         setTubes(newTubes);
@@ -87,19 +91,43 @@ const GameBoard: React.FC = () => {
       .every(tube => tube.length === 0);
     if (filledTubesCount >= 4 || lastTwoTubesEmpty) {
       ToastAndroid.show('You Win!', ToastAndroid.SHORT);
+      navigation.navigate(SCREEN.HOME);
     }
+  };
+
+  const getTopBallColor = (index: number) => {
+    return tubes[index].length > 0 ? tubes[index][0] : THEME.WHITE;
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.tubeContainer}>
         {tubes.map((balls, index) => (
-          <Tube
+          <View
             key={index}
-            balls={balls}
-            onPress={() => handleTubePress(index)}
-            selected={index === selectedTube}
-          />
+            style={{
+              height: heightPercentageToDP(30),
+              justifyContent: 'flex-end',
+            }}>
+            {selectedTube === index && (
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Ball color={getTopBallColor(selectedTube)} />
+              </View>
+            )}
+            <TouchableOpacity onPress={() => handleTubePress(index)}>
+              <Tube
+                key={index}
+                balls={balls}
+                onPress={() => handleTubePress(index)}
+                selected={index === selectedTube}
+                hideTopBall={index === selectedTube}
+              />
+            </TouchableOpacity>
+          </View>
         ))}
       </View>
     </View>

@@ -9,4 +9,5 @@ export const THEME = {
   DARK_GRAY: '#26272C',
   LIGHT_GRAY: '#72777B',
   BACKGROUND: '#1A1D22',
+  YELLOW: '#FFFF00',
 };

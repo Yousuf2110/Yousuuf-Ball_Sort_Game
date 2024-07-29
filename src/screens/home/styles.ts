@@ -4,12 +4,12 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import {RFPercentage} from 'react-native-responsive-fontsize';
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: THEME.PRIMARY,
+    backgroundColor: '#0C1324',
   },
   header: {
     height: hp(7),
@@ -48,6 +48,9 @@ export const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     marginVertical: hp(12),
+    bottom: 0,
+    marginBottom: 200,
+    position: 'absolute',
   },
   button: {
     paddingVertical: wp(3.7),
@@ -64,5 +67,13 @@ export const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: {width: -1, height: 1},
     textShadowRadius: 5,
+  },
+  backgroundImage: {
+    ...StyleSheet.absoluteFillObject, // This ensures the GIF covers the whole screen
+    width: '100%',
+    height: '100%',
+  },
+  backgroundContainer: {
+    flex: 1,
   },
 });

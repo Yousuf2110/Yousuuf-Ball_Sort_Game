@@ -1,26 +1,26 @@
 import React from 'react';
-import {TouchableOpacity} from 'react-native';
-import {styles} from './styles';
+import {View, TouchableOpacity} from 'react-native';
 import Ball from '../ball';
+import {styles} from './styles';
 
-interface TubeProps {
+type TubeProps = {
   balls: string[];
   onPress: () => void;
-  selected: boolean; // Add selected prop
-}
+  selected: boolean;
+  hideTopBall?: boolean;
+};
 
-const Tube: React.FC<TubeProps> = ({balls, onPress, selected}) => {
+const Tube: React.FC<TubeProps> = ({balls, onPress, selected, hideTopBall}) => {
   return (
-    <TouchableOpacity
-      activeOpacity={0.8}
-      style={[
-        styles.tube,
-        selected && styles.selectedTube, // Apply selected style if tube is selected
-      ]}
-      onPress={onPress}>
-      {balls.map((color: any, index: any) => (
-        <Ball key={index} color={color} />
-      ))}
+    <TouchableOpacity onPress={onPress}>
+      <View style={[styles.tube, selected && styles.selectedTube]}>
+        {balls.map((ball, index) => {
+          if (hideTopBall && index === 0) {
+            return null;
+          }
+          return <Ball key={index} color={ball} />;
+        })}
+      </View>
     </TouchableOpacity>
   );
 };
