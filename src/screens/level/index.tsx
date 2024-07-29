@@ -16,7 +16,7 @@ import ResetSvg from '../../assets/svg/reset';
 import BackSvg from '../../assets/svg/back';
 import Footer from '../../components/footer';
 import Ball from '../../components/ball';
-import Container from '../../components/container';
+import GameBoard from '../../components/gameBoard';
 
 const Level = () => {
   const navigation: any = useNavigation();
@@ -35,13 +35,7 @@ const Level = () => {
           <ResetSvg width="25" height="25" />
         </View>
       </View>
-      <View style={styles.row}>
-        <Container />
-        <Container />
-        <Container />
-        <Container />
-        <Container />
-      </View>
+      <GameBoard />
       <View style={styles.footer}>
         <View style={styles.button}>
           <BackSvg width="23" height="23" />
