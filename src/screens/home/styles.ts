@@ -53,8 +53,8 @@ export const styles = StyleSheet.create({
     position: 'absolute',
   },
   button: {
-    paddingVertical: wp(3.7),
-    paddingHorizontal: wp(15),
+    height: wp(17),
+    paddingHorizontal: wp(20),
     backgroundColor: THEME.GREEN,
     alignItems: 'center',
     justifyContent: 'center',
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Poppins-Bold',
-    fontSize: RFPercentage(3.3),
+    fontSize: RFPercentage(3.5),
     color: THEME.WHITE,
     textShadowColor: 'rgba(0, 0, 0, 0.75)',
     textShadowOffset: {width: -1, height: 1},

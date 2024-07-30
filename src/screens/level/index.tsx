@@ -1,74 +1,191 @@
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
-import {styles} from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import {styles} from './styles';
 import {THEME} from '../../theme';
 import SettingSvg from '../../assets/svg/settings';
 import ResetSvg from '../../assets/svg/reset';
 import BackSvg from '../../assets/svg/back';
 import GameBoard from '../../components/gameBoard';
 import Footer from '../../components/footer';
+import SettingModal from '../../components/settingModal';
+
+const generateLevelConfig = (level: any) => {
+  const maxTubes = 12;
+  const maxColors = 10;
+  const colorsList = [
+    'red',
+    'blue',
+    'green',
+    'yellow',
+    'purple',
+    'orange',
+    'pink',
+    'cyan',
+    'brown',
+    'grey',
+  ];
+
+  const tubes = Math.min(maxTubes, Math.floor((level - 1) / 10) + 6);
+  const colors = Math.min(maxColors, Math.floor((level - 1) / 5) + 4);
+
+  const colorSet = colorsList.slice(0, colors);
+
+  const emptyTubesCount = Math.floor(tubes * 0.3);
+  const filledTubesCount = tubes - emptyTubesCount;
+
+  const tubeConfigs = [];
+
+  for (let i = 0; i < emptyTubesCount; i++) {
+    tubeConfigs.push([]);
+  }
+
+  for (let i = 0; i < filledTubesCount; i++) {
+    const colorCount = Math.floor(Math.random() * (colors - 1)) + 1;
+    const tube = Array.from(
+      {length: colorCount},
+      () => colorSet[Math.floor(Math.random() * colors)],
+    );
+    tubeConfigs.push(tube);
+  }
+
+  tubeConfigs.sort(() => Math.random() - 0.5);
+
+  return {
+    level,
+    tubes,
+    colors,
+    colorSet,
+    tubeConfigs,
+  };
+};
 
 const Level = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation();
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const [isGameWon, setIsGameWon] = useState(false);
+  const [levelConfig, setLevelConfig] = useState(generateLevelConfig(1));
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const shuffleArray = (array: any) => {
-    for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
+  useEffect(() => {
+    const loadLevel = async () => {
+      try {
+        const savedLevel = await AsyncStorage.getItem('currentLevel');
+        if (savedLevel !== null) {
+          setCurrentLevel(parseInt(savedLevel, 10));
+        }
+      } catch (error) {
+        console.error('Failed to load level:', error);
+      }
+    };
+
+    loadLevel();
+  }, []);
+
+  useEffect(() => {
+    const saveLevel = async () => {
+      try {
+        await AsyncStorage.setItem('currentLevel', currentLevel.toString());
+      } catch (error) {
+        console.error('Failed to save level:', error);
+      }
+    };
+
+    saveLevel();
+  }, [currentLevel]);
+
+  useEffect(() => {
+    setLevelConfig(generateLevelConfig(currentLevel));
+  }, [currentLevel]);
+
+  const handleNextLevel = () => {
+    setCurrentLevel(prevLevel => prevLevel + 1);
+    setIsGameWon(false);
   };
 
-  const generateInitialState = () => {
-    const colors = [THEME.RED, THEME.BLUE, THEME.GREEN, THEME.YELLOW];
+  const handlePreviousLevel = () => {
+    setCurrentLevel(prevLevel => (prevLevel > 1 ? prevLevel - 1 : 1));
+    setIsGameWon(false);
+  };
 
-    return [
-      shuffleArray([...colors]),
-      shuffleArray([...colors]),
-      shuffleArray([...colors]),
-      shuffleArray([...colors]),
-      [],
-      [],
-    ];
+  const handleGameWin = () => {
+    setIsGameWon(true);
+  };
+
+  const addNewTube = () => {
+    setLevelConfig(prevConfig => {
+      if (prevConfig.tubes < 12) {
+        const newTubes = prevConfig.tubes + 1;
+        return {...prevConfig, tubes: newTubes};
+      } else {
+        ToastAndroid.show('Maximum of 12 tubes reached!', ToastAndroid.SHORT);
+        return prevConfig;
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (isGameWon) {
+      handleNextLevel();
+    }
+  }, [isGameWon]);
+
+  const resetGame = () => {
+    setLevelConfig(generateLevelConfig(currentLevel));
+    setIsGameWon(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={THEME.BACKGROUND} />
       <View style={styles.header}>
-        <View style={styles.iconContainer}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={() => setModalVisible(true)}
+          style={styles.iconContainer}>
           <SettingSvg width="23" height="23" />
-        </View>
+        </TouchableOpacity>
         <View style={styles.levelContainer}>
           <Text style={styles.title}>Level</Text>
-          <Text style={styles.subTitle}>4</Text>
+          <Text style={styles.subTitle}>{levelConfig.level}</Text>
         </View>
         <TouchableOpacity
-          onPress={() => generateInitialState()}
+          activeOpacity={0.8}
+          onPress={resetGame}
           style={styles.iconContainer}>
           <ResetSvg width="25" height="25" />
         </TouchableOpacity>
       </View>
-      <GameBoard />
+      <GameBoard levelConfig={levelConfig} onWin={handleGameWin} />
       <View style={styles.footer}>
-        <View style={styles.button}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={handlePreviousLevel}
+          style={styles.button}>
           <BackSvg width="23" height="23" />
-          <Text style={styles.number}>4</Text>
-        </View>
-        <View style={styles.button}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={addNewTube}
+          style={styles.button}>
           <Text style={styles.number}>+</Text>
           <View style={styles.testTube}></View>
-          <Text style={styles.number}>4</Text>
-        </View>
+          <Text style={styles.number}></Text>
+        </TouchableOpacity>
       </View>
       <Footer />
+      <SettingModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+      />
     </SafeAreaView>
   );
 };

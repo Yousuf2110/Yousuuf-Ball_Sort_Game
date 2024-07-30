@@ -12,7 +12,7 @@ type TubeProps = {
 
 const Tube: React.FC<TubeProps> = ({balls, onPress, selected, hideTopBall}) => {
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
       <View style={[styles.tube, selected && styles.selectedTube]}>
         {balls.map((ball, index) => {
           if (hideTopBall && index === 0) {

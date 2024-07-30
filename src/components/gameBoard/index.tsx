@@ -1,16 +1,23 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, ToastAndroid, TouchableOpacity} from 'react-native';
 import Tube from '../tube';
 import {styles} from './styles';
-import {THEME} from '../../theme';
 import Ball from '../ball';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import { SCREEN } from '../../constants/screens';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
+import {SCREEN} from '../../constants/screens';
 
-type TubeColor = 'red' | 'blue' | 'green' | 'yellow';
+type TubeColor = string;
 type TubeType = TubeColor[];
 type TubesState = TubeType[];
+
+interface GameBoardProps {
+  levelConfig: {
+    tubes: number;
+    colors: number;
+    colorSet: string[];
+  };
+}
 
 const shuffleArray = (array: any) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -20,23 +27,32 @@ const shuffleArray = (array: any) => {
   return array;
 };
 
-const generateInitialState = (): TubesState => {
-  const colors = [THEME.RED, THEME.BLUE, THEME.GREEN, THEME.YELLOW];
+const generateInitialState = (colors: string[], tubes: number): TubesState => {
+  const initialState: TubesState = [];
+  const ballsPerTube = 4;
 
-  return [
-    shuffleArray([...colors]),
-    shuffleArray([...colors]),
-    shuffleArray([...colors]),
-    shuffleArray([...colors]),
-    [],
-    [],
-  ];
+  const allBalls = colors.flatMap(color => Array(ballsPerTube).fill(color));
+
+  const shuffledBalls = shuffleArray(allBalls);
+
+  for (let i = 0; i < tubes; i++) {
+    const start = i * ballsPerTube;
+    const end = start + ballsPerTube;
+    initialState.push(shuffledBalls.slice(start, end));
+  }
+
+  return initialState;
 };
 
-const GameBoard: React.FC = () => {
-  const navigation:any = useNavigation()
-  const [tubes, setTubes] = useState<TubesState>(generateInitialState);
+const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}: any) => {
+  const [tubes, setTubes] = useState<TubesState>(
+    generateInitialState(levelConfig.colorSet, levelConfig.tubes),
+  );
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
+
+  useEffect(() => {
+    setTubes(generateInitialState(levelConfig.colorSet, levelConfig.tubes));
+  }, [levelConfig]);
 
   const handleTubePress = (index: number) => {
     if (selectedTube === null) {
@@ -58,20 +74,32 @@ const GameBoard: React.FC = () => {
     const fromTube = newTubes[fromIndex];
     const toTube = newTubes[toIndex];
 
-    if (fromTube.length > 0 && toTube.length < 4) {
+    if (fromTube.length > 0) {
       const colorToMove = fromTube[0];
       const ballsToMove: TubeColor[] = [];
+
+      // Collect all consecutive balls of the same color
       while (fromTube.length > 0 && fromTube[0] === colorToMove) {
         ballsToMove.push(fromTube.shift()!);
       }
-      if (toTube.length === 0 || toTube[0] === colorToMove) {
-        toTube.unshift(...ballsToMove);
-        setTubes(newTubes);
-        checkWinCondition(newTubes);
+
+      // Check if there is enough space in the destination tube
+      if (toTube.length + ballsToMove.length <= 4) {
+        if (toTube.length === 0 || toTube[0] === colorToMove) {
+          toTube.unshift(...ballsToMove); // Move balls to the destination tube
+          setTubes(newTubes);
+          checkWinCondition(newTubes);
+        } else {
+          fromTube.unshift(...ballsToMove); // Move balls back if invalid
+          ToastAndroid.show(
+            'Invalid move: Ball color does not match!',
+            ToastAndroid.SHORT,
+          );
+        }
       } else {
-        fromTube.unshift(...ballsToMove);
+        fromTube.unshift(...ballsToMove); // Move balls back if there's not enough space
         ToastAndroid.show(
-          'Invalid move: Ball color does not match!',
+          'Invalid move: Tube capacity exceeded!',
           ToastAndroid.SHORT,
         );
       }
@@ -83,20 +111,15 @@ const GameBoard: React.FC = () => {
   const checkWinCondition = (currentTubes: TubesState) => {
     const isCompleteTube = (tube: TubeType) =>
       tube.length === 4 && tube.every(ball => ball === tube[0]);
-    const filledTubesCount = currentTubes
-      .slice(0, 6)
-      .filter(isCompleteTube).length;
-    const lastTwoTubesEmpty = currentTubes
-      .slice(4)
-      .every(tube => tube.length === 0);
-    if (filledTubesCount >= 4 || lastTwoTubesEmpty) {
+    const filledTubesCount = currentTubes.filter(isCompleteTube).length;
+    if (filledTubesCount >= 4) {
       ToastAndroid.show('You Win!', ToastAndroid.SHORT);
-      navigation.navigate(SCREEN.HOME);
+      onWin();
     }
   };
 
   const getTopBallColor = (index: number) => {
-    return tubes[index].length > 0 ? tubes[index][0] : THEME.WHITE;
+    return tubes[index].length > 0 ? tubes[index][0] : 'white';
   };
 
   return (
@@ -110,15 +133,13 @@ const GameBoard: React.FC = () => {
               justifyContent: 'flex-end',
             }}>
             {selectedTube === index && (
-              <View
-                style={{
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+              <View style={{justifyContent: 'center', alignItems: 'center'}}>
                 <Ball color={getTopBallColor(selectedTube)} />
               </View>
             )}
-            <TouchableOpacity onPress={() => handleTubePress(index)}>
+            <TouchableOpacity
+              activeOpacity={0.8}
+              onPress={() => handleTubePress(index)}>
               <Tube
                 key={index}
                 balls={balls}
