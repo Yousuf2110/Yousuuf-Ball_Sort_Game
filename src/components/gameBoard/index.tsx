@@ -4,7 +4,6 @@ import Tube from '../tube';
 import {styles} from './styles';
 import Ball from '../ball';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {useNavigation} from '@react-navigation/native';
 import {SCREEN} from '../../constants/screens';
 
 type TubeColor = string;
@@ -17,6 +16,7 @@ interface GameBoardProps {
     colors: number;
     colorSet: string[];
   };
+  onWin: () => void;
 }
 
 const shuffleArray = (array: any) => {
@@ -44,11 +44,12 @@ const generateInitialState = (colors: string[], tubes: number): TubesState => {
   return initialState;
 };
 
-const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}: any) => {
+const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
   const [tubes, setTubes] = useState<TubesState>(
     generateInitialState(levelConfig.colorSet, levelConfig.tubes),
   );
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
+  const [history, setHistory] = useState<TubesState[]>([]);
 
   useEffect(() => {
     setTubes(generateInitialState(levelConfig.colorSet, levelConfig.tubes));
@@ -77,27 +78,23 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}: any) => {
     if (fromTube.length > 0) {
       const colorToMove = fromTube[0];
       const ballsToMove: TubeColor[] = [];
-
-      // Collect all consecutive balls of the same color
       while (fromTube.length > 0 && fromTube[0] === colorToMove) {
         ballsToMove.push(fromTube.shift()!);
       }
-
-      // Check if there is enough space in the destination tube
       if (toTube.length + ballsToMove.length <= 4) {
         if (toTube.length === 0 || toTube[0] === colorToMove) {
-          toTube.unshift(...ballsToMove); // Move balls to the destination tube
+          toTube.unshift(...ballsToMove);
           setTubes(newTubes);
           checkWinCondition(newTubes);
         } else {
-          fromTube.unshift(...ballsToMove); // Move balls back if invalid
+          fromTube.unshift(...ballsToMove);
           ToastAndroid.show(
             'Invalid move: Ball color does not match!',
             ToastAndroid.SHORT,
           );
         }
       } else {
-        fromTube.unshift(...ballsToMove); // Move balls back if there's not enough space
+        fromTube.unshift(...ballsToMove);
         ToastAndroid.show(
           'Invalid move: Tube capacity exceeded!',
           ToastAndroid.SHORT,

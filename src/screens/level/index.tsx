@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {
+  Alert,
+  BackHandler,
   SafeAreaView,
   StatusBar,
   Text,
@@ -8,7 +10,6 @@ import {
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useNavigation} from '@react-navigation/native';
 import {styles} from './styles';
 import {THEME} from '../../theme';
 import SettingSvg from '../../assets/svg/settings';
@@ -69,11 +70,23 @@ const generateLevelConfig = (level: any) => {
 };
 
 const Level = () => {
-  const navigation = useNavigation();
   const [currentLevel, setCurrentLevel] = useState(1);
   const [isGameWon, setIsGameWon] = useState(false);
   const [levelConfig, setLevelConfig] = useState(generateLevelConfig(1));
   const [modalVisible, setModalVisible] = useState(false);
+
+  useEffect(() => {
+    const backAction = () => {
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   useEffect(() => {
     const loadLevel = async () => {

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   StatusBar,
@@ -6,7 +6,7 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ImageBackground,
+  ToastAndroid,
 } from 'react-native';
 import {styles} from './styles';
 import {useNavigation} from '@react-navigation/native';
@@ -16,10 +16,28 @@ import {SCREEN} from '../../constants/screens';
 import Footer from '../../components/footer';
 import FastImage from 'react-native-fast-image';
 import SettingModal from '../../components/settingModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const navigation: any = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
+  const [currentLevel, setCurrentLevel] = useState(1);
+
+  useEffect(() => {
+    const loadLevel = async () => {
+      try {
+        const savedLevel = await AsyncStorage.getItem('currentLevel');
+        if (savedLevel !== null) {
+          setCurrentLevel(parseInt(savedLevel, 10));
+        }
+      } catch (error) {
+        console.error('Failed to load level:', error);
+        ToastAndroid.show('Failed to load level', ToastAndroid.SHORT);
+      }
+    };
+
+    loadLevel();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -55,7 +73,7 @@ const Home = () => {
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => navigation.navigate(SCREEN.LEVEL)}>
-              <Text style={styles.title}>Play</Text>
+              <Text style={styles.title}>Level {currentLevel}</Text>
             </TouchableOpacity>
           </FastImage>
         </View>
