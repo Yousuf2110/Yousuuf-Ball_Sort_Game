@@ -4,7 +4,6 @@ import Tube from '../tube';
 import {styles} from './styles';
 import Ball from '../ball';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
-import {SCREEN} from '../../constants/screens';
 
 type TubeColor = string;
 type TubeType = TubeColor[];
@@ -49,7 +48,6 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
     generateInitialState(levelConfig.colorSet, levelConfig.tubes),
   );
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
-  const [history, setHistory] = useState<TubesState[]>([]);
 
   useEffect(() => {
     setTubes(generateInitialState(levelConfig.colorSet, levelConfig.tubes));
