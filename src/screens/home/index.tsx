@@ -9,7 +9,7 @@ import {
   ToastAndroid,
 } from 'react-native';
 import {styles} from './styles';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import SettingSvg from '../../assets/svg/settings';
 import PaintSvg from '../../assets/svg/paint';
 import {SCREEN} from '../../constants/screens';
@@ -20,8 +20,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = () => {
   const navigation: any = useNavigation();
+  const route = useRoute();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(1);
+  const [screenTitle, setScreenTitle] = useState('');
 
   useEffect(() => {
     const loadLevel = async () => {
@@ -35,9 +37,15 @@ const Home = () => {
         ToastAndroid.show('Failed to load level', ToastAndroid.SHORT);
       }
     };
-
     loadLevel();
   }, []);
+
+  useEffect(() => {
+    console.log('Current screen name:', route.name);
+    setScreenTitle(route.name);
+  }, [route]);
+
+  console.log(screenTitle);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -78,6 +86,7 @@ const Home = () => {
           </FastImage>
         </View>
         <SettingModal
+          screenTitle={screenTitle}
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
         />

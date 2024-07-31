@@ -10,17 +10,22 @@ import NoVibrationSvg from '../../assets/svg/noVibration';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import {SCREEN} from '../../constants/screens';
 
 const data = [
+  {id: '0', label: 'Home', icon: 'home'},
   {id: '1', label: 'Collection', icon: 'home'},
   {id: '2', label: 'Language', icon: 'world-o'},
   {id: '3', label: 'Contact Us', icon: 'headphones'},
-  {id: '3', label: 'Restore Purchase', icon: 'restore'},
+  {id: '4', label: 'Restore Purchase', icon: 'restore'},
 ];
 
-const SettingModal = ({setModalVisible, modalVisible}: any) => {
+const SettingModal = ({setModalVisible, modalVisible, screenTitle}: any) => {
   const [volume, setVolume] = useState(false);
   const [vibration, setVibration] = useState(false);
+
+  const filteredData =
+    screenTitle === 'Home' ? data.filter(item => item.id !== '0') : data;
 
   const renderItem = ({item, index}: {item: any; index: number}) => (
     <TouchableOpacity
@@ -29,9 +34,9 @@ const SettingModal = ({setModalVisible, modalVisible}: any) => {
         styles.menuContainer,
         {
           backgroundColor: index % 2 === 0 ? '#ECDEC4' : '#F3E6D3',
-          marginBottom: index === data.length - 1 ? hp(1) : 0,
-          borderBottomLeftRadius: index === data.length - 1 ? 10 : 0,
-          borderBottomRightRadius: index === data.length - 1 ? 10 : 0,
+          marginBottom: index === filteredData.length - 1 ? hp(1) : 0,
+          borderBottomLeftRadius: index === filteredData.length - 1 ? 10 : 0,
+          borderBottomRightRadius: index === filteredData.length - 1 ? 10 : 0,
         },
       ]}>
       <View style={styles.iconColumn}>
@@ -62,7 +67,13 @@ const SettingModal = ({setModalVisible, modalVisible}: any) => {
           setModalVisible(!modalVisible);
         }}>
         <View style={styles.centeredView}>
-          <View style={styles.modalView}>
+          <View
+            style={[
+              styles.modalView,
+              {
+                height: screenTitle === SCREEN.HOME ? hp(45) : hp(52),
+              },
+            ]}>
             <View style={styles.header}>
               <View style={styles.wrapper}>
                 <Text style={styles.title}>Setting</Text>
@@ -93,9 +104,10 @@ const SettingModal = ({setModalVisible, modalVisible}: any) => {
               </View>
             </View>
             <FlatList
-              data={data}
+              data={filteredData}
               renderItem={renderItem}
               keyExtractor={item => item.id}
+              showsVerticalScrollIndicator={false}
             />
             <View style={styles.wrapper}>
               <Text style={styles.terms}>Term of service & Privacy Policy</Text>

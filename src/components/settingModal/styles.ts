@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
-    height: hp(46),
   },
   header: {
     width: '100%',
@@ -114,7 +113,6 @@ export const styles = StyleSheet.create({
     fontFamily: 'Poppins-SemiBold',
     fontSize: RFPercentage(1.5),
     color: THEME.BLUE,
-    marginTop: hp(0.5),
     textDecorationLine: 'underline',
   },
   dotCom: {
