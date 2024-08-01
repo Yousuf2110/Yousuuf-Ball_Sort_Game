@@ -30,15 +30,20 @@ const shuffleArray = (array: any) => {
 const generateInitialState = (colors: string[], tubes: number): TubesState => {
   const initialState: TubesState = [];
   const ballsPerTube = 4;
+  const nonEmptyTubesCount = Math.max(0, tubes - 2);
 
   const allBalls = colors.flatMap(color => Array(ballsPerTube).fill(color));
-
   const shuffledBalls = shuffleArray(allBalls);
 
-  for (let i = 0; i < tubes; i++) {
+  for (let i = 0; i < nonEmptyTubesCount; i++) {
     const start = i * ballsPerTube;
     const end = start + ballsPerTube;
     initialState.push(shuffledBalls.slice(start, end));
+  }
+
+  // Add two empty tubes
+  for (let i = 0; i < 2; i++) {
+    initialState.push([]);
   }
 
   return initialState;

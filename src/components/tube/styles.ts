@@ -8,7 +8,7 @@ import {THEME} from '../../theme';
 export const styles = StyleSheet.create({
   tube: {
     width: 50,
-    height: hp(30),
+    height: hp(28),
     borderWidth: 1,
     borderColor: THEME.WHITE,
     borderTopLeftRadius: 2,
