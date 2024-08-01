@@ -6,7 +6,6 @@ import {
   View,
   Image,
   TouchableOpacity,
-  ToastAndroid,
 } from 'react-native';
 import {styles} from './styles';
 import {useNavigation, useRoute} from '@react-navigation/native';
@@ -34,7 +33,6 @@ const Home = () => {
         }
       } catch (error) {
         console.error('Failed to load level:', error);
-        ToastAndroid.show('Failed to load level', ToastAndroid.SHORT);
       }
     };
     loadLevel();
@@ -53,7 +51,7 @@ const Home = () => {
       <View style={styles.backgroundContainer}>
         <FastImage
           style={styles.backgroundImage}
-          source={require('../../assets/images/3.gif')}
+          source={require('../../assets/images/ball.gif')}
           resizeMode={FastImage.resizeMode.contain}
         />
         <View style={styles.header}>

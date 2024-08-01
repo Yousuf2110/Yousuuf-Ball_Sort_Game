@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, ToastAndroid, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import Tube from '../tube';
 import {styles} from './styles';
 import Ball from '../ball';
@@ -65,7 +65,6 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
       if (tubes[index].length > 0) {
         setSelectedTube(index);
       } else {
-        ToastAndroid.show('Select a non-empty tube!', ToastAndroid.SHORT);
       }
     } else {
       if (index !== selectedTube) {
@@ -98,20 +97,11 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
           checkWinCondition(newTubes);
         } else {
           fromTube.unshift(...ballsToMove);
-          ToastAndroid.show(
-            'Invalid move: Ball color does not match!',
-            ToastAndroid.SHORT,
-          );
         }
       } else {
         fromTube.unshift(...ballsToMove);
-        ToastAndroid.show(
-          'Invalid move: Tube capacity exceeded!',
-          ToastAndroid.SHORT,
-        );
       }
     } else {
-      ToastAndroid.show('Invalid move!', ToastAndroid.SHORT);
     }
   };
 
@@ -120,7 +110,6 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
       tube.length === 4 && tube.every(ball => ball === tube[0]);
     const filledTubesCount = currentTubes.filter(isCompleteTube).length;
     if (filledTubesCount >= 4) {
-      ToastAndroid.show('You Win!', ToastAndroid.SHORT);
       onWin();
     }
   };
@@ -135,7 +124,6 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
       setHistory(newHistory);
       setTubes(JSON.parse(JSON.stringify(newHistory[newHistory.length - 1])));
     } else {
-      ToastAndroid.show('No moves to undo!', ToastAndroid.SHORT);
     }
   };
 

@@ -4,7 +4,6 @@ import {
   SafeAreaView,
   StatusBar,
   Text,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -38,12 +37,9 @@ const generateLevelConfig = (level: any) => {
 
   const tubes = Math.min(maxTubes, Math.floor((level - 1) / 10) + 6);
   const colors = Math.min(maxColors, Math.floor((level - 1) / 5) + 4);
-
   const colorSet = colorsList.slice(0, colors);
-
-  const emptyTubesCount = Math.floor(tubes * 0.3);
+  const emptyTubesCount = Math.max(Math.floor(tubes * 0.3), 2);
   const filledTubesCount = tubes - emptyTubesCount;
-
   const tubeConfigs = [];
 
   for (let i = 0; i < emptyTubesCount; i++) {
@@ -84,7 +80,6 @@ const Level = () => {
         navigation.navigate(SCREEN.HOME);
         return true;
       } else {
-        ToastAndroid.show('Press back again to go to Home', ToastAndroid.SHORT);
         setBackPressCount(1);
         setTimeout(() => {
           setBackPressCount(0);
@@ -152,7 +147,6 @@ const Level = () => {
         const newTubes = prevConfig.tubes + 1;
         return {...prevConfig, tubes: newTubes};
       } else {
-        ToastAndroid.show('Maximum of 12 tubes reached!', ToastAndroid.SHORT);
         return prevConfig;
       }
     });
