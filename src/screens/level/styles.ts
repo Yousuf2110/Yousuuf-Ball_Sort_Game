@@ -63,14 +63,13 @@ export const styles = StyleSheet.create({
     backgroundColor: THEME.WHITE,
   },
   footer: {
-    width: '100%',
+    width: '50%',
     height: hp(7),
     bottom: 0,
     marginBottom: hp(8.4),
     position: 'absolute',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    alignSelf: 'flex-end',
   },
   button: {
     width: 60,
@@ -79,7 +78,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 60 / 2,
     backgroundColor: THEME.BLUE,
-    marginHorizontal: wp(5),
     flexDirection: 'row',
   },
   row: {

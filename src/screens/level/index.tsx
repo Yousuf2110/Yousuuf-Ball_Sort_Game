@@ -188,12 +188,6 @@ const Level = () => {
       <View style={styles.footer}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={handlePreviousLevel}
-          style={styles.button}>
-          <BackSvg width="23" height="23" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          activeOpacity={0.8}
           onPress={addNewTube}
           style={styles.button}>
           <Text style={styles.number}>+</Text>

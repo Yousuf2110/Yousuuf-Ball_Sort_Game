@@ -155,12 +155,14 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
           </View>
         ))}
       </View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={undoLastMove}
-        style={styles.button}>
-        <BackSvg width="23" height="23" />
-      </TouchableOpacity>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          activeOpacity={0.8}
+          onPress={undoLastMove}
+          style={styles.button}>
+          <BackSvg width="23" height="23" />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

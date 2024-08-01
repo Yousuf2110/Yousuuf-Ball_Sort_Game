@@ -1,6 +1,9 @@
 import {StyleSheet} from 'react-native';
 import {THEME} from '../../theme';
-import {widthPercentageToDP as wp} from 'react-native-responsive-screen';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export const styles = StyleSheet.create({
   container: {
@@ -13,6 +16,14 @@ export const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
   },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    marginBottom: hp(7.5),
+    left: wp(5),
+    width: '50%',
+    alignItems: 'flex-end',
+  },
   button: {
     width: 60,
     height: 60,
@@ -20,7 +31,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 60 / 2,
     backgroundColor: THEME.BLUE,
-    marginHorizontal: wp(5),
+    right: wp(8),
     flexDirection: 'row',
   },
 });
