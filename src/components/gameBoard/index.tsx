@@ -41,7 +41,6 @@ const generateInitialState = (colors: string[], tubes: number): TubesState => {
     initialState.push(shuffledBalls.slice(start, end));
   }
 
-  // Add two empty tubes
   for (let i = 0; i < 2; i++) {
     initialState.push([]);
   }
