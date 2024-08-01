@@ -21,19 +21,8 @@ import {SCREEN} from '../../constants/screens';
 
 const generateLevelConfig = (level: any) => {
   const maxTubes = 12;
-  const maxColors = 10;
-  const colorsList = [
-    'red',
-    'blue',
-    'green',
-    'yellow',
-    'purple',
-    'orange',
-    'pink',
-    'cyan',
-    'brown',
-    'grey',
-  ];
+  const maxColors = 4;
+  const colorsList = ['red', 'blue', 'green', 'yellow'];
 
   const tubes = Math.min(maxTubes, Math.floor((level - 1) / 10) + 6);
   const colors = Math.min(maxColors, Math.floor((level - 1) / 5) + 4);
