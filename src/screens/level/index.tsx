@@ -192,7 +192,6 @@ const Level = () => {
           style={styles.button}>
           <Text style={styles.number}>+</Text>
           <View style={styles.testTube}></View>
-          <Text style={styles.number}></Text>
         </TouchableOpacity>
       </View>
       <Footer />

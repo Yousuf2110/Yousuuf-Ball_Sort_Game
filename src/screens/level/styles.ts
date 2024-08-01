@@ -4,7 +4,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
-import {RFPercentage, RFValue} from 'react-native-responsive-fontsize';
+import {RFPercentage} from 'react-native-responsive-fontsize';
 
 export const styles = StyleSheet.create({
   container: {
@@ -79,11 +79,5 @@ export const styles = StyleSheet.create({
     borderRadius: 60 / 2,
     backgroundColor: THEME.BLUE,
     flexDirection: 'row',
-  },
-  row: {
-    flexDirection: 'row',
-    paddingHorizontal: wp(5),
-    justifyContent: 'center',
-    marginVertical: hp(25),
   },
 });

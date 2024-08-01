@@ -3,7 +3,7 @@ import {View, TouchableOpacity} from 'react-native';
 import Tube from '../tube';
 import {styles} from './styles';
 import Ball from '../ball';
-import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import BackSvg from '../../assets/svg/back';
 
 type TubeColor = string;
@@ -132,14 +132,9 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
     <View style={styles.container}>
       <View style={styles.tubeContainer}>
         {tubes.map((balls, index) => (
-          <View
-            key={index}
-            style={{
-              height: heightPercentageToDP(30),
-              justifyContent: 'flex-end',
-            }}>
+          <View key={index} style={styles.tubesContainer}>
             {selectedTube === index && (
-              <View style={{justifyContent: 'center', alignItems: 'center'}}>
+              <View style={styles.ballsContainer}>
                 <Ball color={getTopBallColor(selectedTube)} />
               </View>
             )}

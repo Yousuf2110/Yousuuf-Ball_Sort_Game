@@ -34,4 +34,12 @@ export const styles = StyleSheet.create({
     right: wp(8),
     flexDirection: 'row',
   },
+  ballsContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tubesContainer: {
+    height: hp(30),
+    justifyContent: 'flex-end',
+  },
 });
