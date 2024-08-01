@@ -38,14 +38,13 @@ const generateLevelConfig = (level: any) => {
   const tubes = Math.min(maxTubes, Math.floor((level - 1) / 10) + 6);
   const colors = Math.min(maxColors, Math.floor((level - 1) / 5) + 4);
   const colorSet = colorsList.slice(0, colors);
-  const emptyTubesCount = Math.max(Math.floor(tubes * 0.3), 2);
+  const emptyTubesCount = 2;
   const filledTubesCount = tubes - emptyTubesCount;
   const tubeConfigs = [];
 
   for (let i = 0; i < emptyTubesCount; i++) {
     tubeConfigs.push([]);
   }
-
   for (let i = 0; i < filledTubesCount; i++) {
     const colorCount = Math.floor(Math.random() * (colors - 1)) + 1;
     const tube = Array.from(
@@ -66,7 +65,7 @@ const generateLevelConfig = (level: any) => {
   };
 };
 
-const Level = () => {
+const Game = () => {
   const navigation: any = useNavigation();
   const [currentLevel, setCurrentLevel] = useState(1);
   const [isGameWon, setIsGameWon] = useState(false);
@@ -174,7 +173,7 @@ const Level = () => {
           <SettingSvg width="23" height="23" />
         </TouchableOpacity>
         <View style={styles.levelContainer}>
-          <Text style={styles.title}>Level</Text>
+          <Text style={styles.title}>Game</Text>
           <Text style={styles.subTitle}>{levelConfig.level}</Text>
         </View>
         <TouchableOpacity
@@ -203,4 +202,4 @@ const Level = () => {
   );
 };
 
-export default Level;
+export default Game;

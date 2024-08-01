@@ -78,8 +78,8 @@ const Home = () => {
             style={styles.button}>
             <TouchableOpacity
               activeOpacity={0.8}
-              onPress={() => navigation.navigate(SCREEN.LEVEL)}>
-              <Text style={styles.title}>Level {currentLevel}</Text>
+              onPress={() => navigation.navigate(SCREEN.GAME)}>
+              <Text style={styles.title}>Game {currentLevel}</Text>
             </TouchableOpacity>
           </FastImage>
         </View>

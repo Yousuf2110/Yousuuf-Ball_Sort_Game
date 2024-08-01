@@ -1,4 +1,4 @@
 export const SCREEN = {
   HOME: 'Home',
-  LEVEL: 'Level',
+  GAME: 'Game',
 };
