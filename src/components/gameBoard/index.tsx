@@ -75,7 +75,7 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
   };
 
   const moveBall = (fromIndex: number, toIndex: number) => {
-    const newTubes = JSON.parse(JSON.stringify(tubes)); // deep copy
+    const newTubes = JSON.parse(JSON.stringify(tubes));
     const fromTube = newTubes[fromIndex];
     const toTube = newTubes[toIndex];
 
@@ -85,23 +85,24 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
       while (fromTube.length > 0 && fromTube[0] === colorToMove) {
         ballsToMove.push(fromTube.shift()!);
       }
-      if (toTube.length + ballsToMove.length <= 4) {
-        if (toTube.length === 0 || toTube[0] === colorToMove) {
-          setHistory(prevHistory => [
-            ...prevHistory,
-            JSON.parse(JSON.stringify(newTubes)), // deep copy
-          ]);
 
-          toTube.unshift(...ballsToMove);
-          setTubes(newTubes);
-          checkWinCondition(newTubes);
-        } else {
-          fromTube.unshift(...ballsToMove);
-        }
+      const spaceAvailable = 4 - toTube.length;
+      const ballsToMoveToDestination = ballsToMove.slice(0, spaceAvailable);
+      const ballsToRemainInSource = ballsToMove.slice(spaceAvailable);
+
+      if (toTube.length === 0 || toTube[0] === colorToMove) {
+        setHistory(prevHistory => [
+          ...prevHistory,
+          JSON.parse(JSON.stringify(newTubes)),
+        ]);
+
+        toTube.unshift(...ballsToMoveToDestination);
+        fromTube.unshift(...ballsToRemainInSource);
+        setTubes(newTubes);
+        checkWinCondition(newTubes);
       } else {
         fromTube.unshift(...ballsToMove);
       }
-    } else {
     }
   };
 
