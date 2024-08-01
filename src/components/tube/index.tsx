@@ -6,14 +6,13 @@ import {styles} from './styles';
 type TubeProps = {
   balls: string[];
   onPress: () => void;
-  selected: boolean;
   hideTopBall?: boolean;
 };
 
-const Tube: React.FC<TubeProps> = ({balls, onPress, selected, hideTopBall}) => {
+const Tube: React.FC<TubeProps> = ({balls, onPress, hideTopBall}) => {
   return (
-    <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
-      <View style={[styles.tube, selected && styles.selectedTube]}>
+    <TouchableOpacity activeOpacity={1} onPress={onPress}>
+      <View style={styles.tube}>
         {balls.map((ball, index) => {
           if (hideTopBall && index === 0) {
             return null;

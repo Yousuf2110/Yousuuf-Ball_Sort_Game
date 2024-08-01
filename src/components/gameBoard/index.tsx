@@ -4,6 +4,7 @@ import Tube from '../tube';
 import {styles} from './styles';
 import Ball from '../ball';
 import {heightPercentageToDP} from 'react-native-responsive-screen';
+import BackSvg from '../../assets/svg/back';
 
 type TubeColor = string;
 type TubeType = TubeColor[];
@@ -48,9 +49,15 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
     generateInitialState(levelConfig.colorSet, levelConfig.tubes),
   );
   const [selectedTube, setSelectedTube] = useState<number | null>(null);
+  const [history, setHistory] = useState<TubesState[]>([]);
 
   useEffect(() => {
-    setTubes(generateInitialState(levelConfig.colorSet, levelConfig.tubes));
+    const initialTubes = generateInitialState(
+      levelConfig.colorSet,
+      levelConfig.tubes,
+    );
+    setTubes(initialTubes);
+    setHistory([initialTubes]);
   }, [levelConfig]);
 
   const handleTubePress = (index: number) => {
@@ -69,7 +76,7 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
   };
 
   const moveBall = (fromIndex: number, toIndex: number) => {
-    const newTubes = [...tubes];
+    const newTubes = JSON.parse(JSON.stringify(tubes)); // deep copy
     const fromTube = newTubes[fromIndex];
     const toTube = newTubes[toIndex];
 
@@ -81,6 +88,11 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
       }
       if (toTube.length + ballsToMove.length <= 4) {
         if (toTube.length === 0 || toTube[0] === colorToMove) {
+          setHistory(prevHistory => [
+            ...prevHistory,
+            JSON.parse(JSON.stringify(newTubes)), // deep copy
+          ]);
+
           toTube.unshift(...ballsToMove);
           setTubes(newTubes);
           checkWinCondition(newTubes);
@@ -117,6 +129,16 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
     return tubes[index].length > 0 ? tubes[index][0] : 'white';
   };
 
+  const undoLastMove = () => {
+    if (history.length > 1) {
+      const newHistory = history.slice(0, -1);
+      setHistory(newHistory);
+      setTubes(JSON.parse(JSON.stringify(newHistory[newHistory.length - 1])));
+    } else {
+      ToastAndroid.show('No moves to undo!', ToastAndroid.SHORT);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.tubeContainer}>
@@ -139,13 +161,18 @@ const GameBoard: React.FC<GameBoardProps> = ({levelConfig, onWin}) => {
                 key={index}
                 balls={balls}
                 onPress={() => handleTubePress(index)}
-                selected={index === selectedTube}
                 hideTopBall={index === selectedTube}
               />
             </TouchableOpacity>
           </View>
         ))}
       </View>
+      <TouchableOpacity
+        activeOpacity={0.8}
+        onPress={undoLastMove}
+        style={styles.button}>
+        <BackSvg width="23" height="23" />
+      </TouchableOpacity>
     </View>
   );
 };

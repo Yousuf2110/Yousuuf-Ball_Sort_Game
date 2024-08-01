@@ -7,20 +7,16 @@ import {THEME} from '../../theme';
 
 export const styles = StyleSheet.create({
   tube: {
-    width: 40,
-    height: hp(25),
+    width: 50,
+    height: hp(28),
     borderWidth: 1,
     borderColor: THEME.WHITE,
-    borderTopLeftRadius: 5,
-    borderTopRightRadius: 5,
-    borderBottomLeftRadius: 22,
-    borderBottomRightRadius: 22,
-    marginHorizontal: wp(2),
+    borderTopLeftRadius: 2,
+    borderTopRightRadius: 2,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginHorizontal: wp(0.8),
     alignItems: 'center',
     justifyContent: 'flex-end',
-  },
-  selectedTube: {
-    borderColor: 'gold',
-    borderWidth: 4,
   },
 });

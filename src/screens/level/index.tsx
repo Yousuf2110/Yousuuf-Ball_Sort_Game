@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from 'react';
 import {
-  Alert,
   BackHandler,
   SafeAreaView,
   StatusBar,
@@ -18,6 +17,8 @@ import BackSvg from '../../assets/svg/back';
 import GameBoard from '../../components/gameBoard';
 import Footer from '../../components/footer';
 import SettingModal from '../../components/settingModal';
+import {useNavigation} from '@react-navigation/native';
+import {SCREEN} from '../../constants/screens';
 
 const generateLevelConfig = (level: any) => {
   const maxTubes = 12;
@@ -70,14 +71,26 @@ const generateLevelConfig = (level: any) => {
 };
 
 const Level = () => {
+  const navigation: any = useNavigation();
   const [currentLevel, setCurrentLevel] = useState(1);
   const [isGameWon, setIsGameWon] = useState(false);
   const [levelConfig, setLevelConfig] = useState(generateLevelConfig(1));
   const [modalVisible, setModalVisible] = useState(false);
+  const [backPressCount, setBackPressCount] = useState(0);
 
   useEffect(() => {
     const backAction = () => {
-      return true;
+      if (backPressCount === 1) {
+        navigation.navigate(SCREEN.HOME);
+        return true;
+      } else {
+        ToastAndroid.show('Press back again to go to Home', ToastAndroid.SHORT);
+        setBackPressCount(1);
+        setTimeout(() => {
+          setBackPressCount(0);
+        }, 2000);
+        return true;
+      }
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -86,7 +99,7 @@ const Level = () => {
     );
 
     return () => backHandler.remove();
-  }, []);
+  }, [backPressCount, navigation]);
 
   useEffect(() => {
     const loadLevel = async () => {
@@ -177,7 +190,7 @@ const Level = () => {
           <ResetSvg width="25" height="25" />
         </TouchableOpacity>
       </View>
-      <GameBoard levelConfig={levelConfig} onWin={handleGameWin} />
+      <GameBoard onWin={handleGameWin} levelConfig={levelConfig} />
       <View style={styles.footer}>
         <TouchableOpacity
           activeOpacity={0.8}
